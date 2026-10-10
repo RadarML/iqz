@@ -37,6 +37,10 @@ uv run python scripts/bench.py path/to/testvectors
 
     The pre-commit hooks (`ruff + pyright + pytest + cargo fmt + cargo clippy`) can be run manually with `uv run pre-commit run --all-files`.
 
+## Analysis
+
+The measurements on the [Analysis](analysis/index.md) page are produced by a separate project in `analysis/`, with its own dependencies; see `analysis/README.md`. Its outputs (`analysis/results/`, and the figures and tables in `docs/analysis/`) are committed, so building the docs does not require the datasets.
+
 ## Docs
 
 ```sh

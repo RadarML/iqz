@@ -5,7 +5,12 @@ repo_name: RadarML/iqz
 nav:
   - Home: index.md
   - API: api.md
+  - Analysis: analysis/index.md
   - Development: develop.md
+
+# Generated tables are included into analysis/index.md via snippets.
+exclude_docs: |
+  analysis/tables/
 
 extra_css:
   - stylesheets/extra.css
@@ -16,6 +21,7 @@ theme:
     logo: material/zip-box
     annotation: material/arrow-right-circle
   font:
+    text: Roboto
     code: monospace
   features:
     - navigation.instant
@@ -54,6 +60,7 @@ plugins:
       "IQZ":
       - index.md: Project overview, installation, usage, and byte-level format specification
       - api.md: Functional and streaming encoder / decoder API reference
+      - analysis/index.md: Measurements behind the codec design - compression ratios with confidence intervals, speed, and alternatives considered
       - develop.md: Development environment setup, testing, and benchmarking
 - mkdocstrings:
     default_handler: python_xref
@@ -91,7 +98,8 @@ markdown_extensions:
       emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.inlinehilite
-  - pymdownx.snippets
+  - pymdownx.snippets:
+      check_paths: true
   - def_list
   - attr_list
   - md_in_html
