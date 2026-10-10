@@ -18,8 +18,8 @@ struct Scratch {
     dctx: DCtx<'static>,
     /// Encode: mean chirp as little-endian bytes; decode: decompressed mean.
     mean: Vec<u8>,
-    /// Shuffled planes (`2 * n * M` bytes): all high bytes, then all low.
-    planes: Vec<u8>,
+    /// Shuffled residuals (`2 * n * M` bytes): all high bytes, then all low.
+    residuals: Vec<u8>,
     /// Encoded output blob.
     out: Vec<u8>,
 }
@@ -29,7 +29,7 @@ thread_local! {
         cctx: CCtx::create(),
         dctx: DCtx::create(),
         mean: Vec::new(),
-        planes: Vec::new(),
+        residuals: Vec::new(),
         out: Vec::new(),
     });
 }
@@ -81,9 +81,9 @@ fn encode_impl(
     let total = n * m;
     let mean = mean_chirp(x, n, m);
 
-    s.planes.clear();
-    s.planes.resize(2 * total, 0);
-    let (hi, lo) = s.planes.split_at_mut(total);
+    s.residuals.clear();
+    s.residuals.resize(2 * total, 0);
+    let (hi, lo) = s.residuals.split_at_mut(total);
     for ((row, h), l) in x
         .chunks_exact(m)
         .zip(hi.chunks_exact_mut(m))
@@ -111,7 +111,7 @@ fn encode_impl(
     head.copy_from_slice(&(a as u32).to_le_bytes());
     let b = s
         .cctx
-        .compress(&mut rest[a..], &s.planes, level)
+        .compress(&mut rest[a..], &s.residuals, level)
         .map_err(zstd_err)?;
     Ok(4 + a + b)
 }
@@ -160,16 +160,16 @@ fn decode_impl(
         return Err("blob is truncated".into());
     }
     let (fa, fb) = blob[4..].split_at(k);
-    if content_size(fa, "mean")? != 2 * m || content_size(fb, "plane")? != 2 * total {
+    if content_size(fa, "mean")? != 2 * m || content_size(fb, "residual")? != 2 * total {
         return Err(format!("blob does not match output shape ({n}, {m})"));
     }
 
     s.mean.clear();
     s.mean.reserve(2 * m);
     let a = s.dctx.decompress(&mut s.mean, fa).map_err(zstd_err)?;
-    s.planes.clear();
-    s.planes.reserve(2 * total);
-    let b = s.dctx.decompress(&mut s.planes, fb).map_err(zstd_err)?;
+    s.residuals.clear();
+    s.residuals.reserve(2 * total);
+    let b = s.dctx.decompress(&mut s.residuals, fb).map_err(zstd_err)?;
     if a != 2 * m || b != 2 * total {
         return Err("decompressed size mismatch".into());
     }
@@ -181,7 +181,7 @@ fn decode_impl(
         .iter()
         .map(|&c| i16::from_le_bytes(c))
         .collect();
-    let (hi, lo) = s.planes.split_at(total);
+    let (hi, lo) = s.residuals.split_at(total);
     for ((orow, h), l) in out
         .chunks_exact_mut(m)
         .zip(hi.chunks_exact(m))

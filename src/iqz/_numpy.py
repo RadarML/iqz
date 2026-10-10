@@ -31,10 +31,10 @@ def encode_chunk(x: Int16[np.ndarray, "n M"], level: int) -> bytes:
     r = x - m                                      # int16, wraps on overflow
     u = (r << 1) ^ (r >> 15)                       # zigzag (arithmetic shift)
     b = u.view(np.uint8).reshape(-1, 2)            # little-endian: [lo, hi]
-    planes = np.concatenate([b[:, 1], b[:, 0]])    # all high bytes, then low
+    residuals = np.concatenate([b[:, 1], b[:, 0]]) # all high bytes, then low
     cctx = _cctx(level)
     mz = cctx.compress(m.data)
-    return len(mz).to_bytes(4, "little") + mz + cctx.compress(planes.data)
+    return len(mz).to_bytes(4, "little") + mz + cctx.compress(residuals.data)
 
 
 def decode_into(

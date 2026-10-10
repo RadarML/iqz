@@ -134,3 +134,80 @@ def test_stream_roundtrip(backend):
         decoder.push(blob)
     out.append(decoder.read())
     assert np.array_equal(np.concatenate(out), x)
+
+
+def _blobs(x, n, backend):
+    return [iqz.encode(x[i:i + n], backend=backend)
+            for i in range(0, len(x), n)]
+
+
+@pytest.mark.parametrize("k", [1, 7, 64, 100, 128])
+def test_decoder_read_into(backend, k):
+    """`read_into` refills one buffer, across and within chunk boundaries."""
+    x = chirps(64 * 5 + 30, SHAPE)
+    decoder = iqz.Decoder(SHAPE, backend=backend)
+    for blob in _blobs(x, 64, backend):
+        decoder.push(blob)
+    out = np.empty((k, *SHAPE), np.int16)
+    for i in range(0, len(x) - k + 1, k):
+        assert decoder.read_into(out) is out
+        assert np.array_equal(out, x[i:i + k])
+    assert decoder.available == len(x) % k
+
+
+def test_decoder_read_into_errors(backend):
+    x = chirps(64, SHAPE)
+    decoder = iqz.Decoder(SHAPE, backend=backend)
+    decoder.push(iqz.encode(x, backend=backend))
+    with pytest.raises(ValueError, match="available"):
+        decoder.read_into(np.empty((65, *SHAPE), np.int16))
+    with pytest.raises(ValueError, match="does not match"):
+        decoder.read_into(np.empty((4, 3, 4, 8), np.int16))
+    with pytest.raises(TypeError):
+        decoder.read_into(np.empty((4, *SHAPE), np.int32))
+    with pytest.raises(ValueError, match="C-contiguous"):
+        decoder.read_into(np.empty((8, *SHAPE), np.int16)[::2])
+    assert decoder.available == 64
+    assert np.array_equal(decoder.read(), x)
+
+
+def test_decoder_views_not_overwritten(backend):
+    """Views returned by `read` (or derived from them) are never reused."""
+    x = chirps(64 * 6, SHAPE)
+    blobs = _blobs(x, 64, backend)
+    decoder = iqz.Decoder(SHAPE, backend=backend)
+    decoder.push(blobs[0])
+    whole = decoder.read(64)
+    decoder.push(blobs[1])
+    derived = decoder.read(64)[5:9, 1]  # parent view is dropped immediately
+    for blob in blobs[2:]:
+        decoder.push(blob)
+        decoder.read(64)
+    assert np.array_equal(whole, x[:64])
+    assert np.array_equal(derived, x[64 + 5:64 + 9, 1])
+
+
+def test_decoder_reuse_mixed_sizes(backend):
+    """Buffers are reused across chunks of different lengths."""
+    x = chirps(400, SHAPE)
+    decoder = iqz.Decoder(SHAPE, backend=backend)
+    out, i = [], 0
+    for n in [64, 10, 64, 64, 3, 128, 64, 3]:
+        decoder.push(iqz.encode(x[i:i + n], backend=backend))
+        i += n
+        out.append(decoder.read(7 if decoder.available >= 7 else None).copy())
+    out.append(decoder.read())
+    assert np.array_equal(np.concatenate(out), x[:i])
+
+
+def test_decoder_corrupt_blob(backend):
+    """Header errors raise on push; corrupt data raises when read."""
+    x = chirps(64, SHAPE)
+    blob = iqz.encode(x, backend=backend)
+    decoder = iqz.Decoder(SHAPE, backend=backend)
+    with pytest.raises(ValueError):
+        decoder.push(blob[:3])
+    assert decoder.available == 0
+    decoder.push(blob[:-5])
+    with pytest.raises(ValueError):
+        decoder.read()
