@@ -1,0 +1,100 @@
+site_name: IQZ
+site_url: https://radarml.github.io/iqz
+repo_url: https://github.com/RadarML/iqz
+repo_name: RadarML/iqz
+nav:
+  - Home: index.md
+  - API: api.md
+
+extra_css:
+  - stylesheets/extra.css
+
+theme:
+  name: material
+  icon:
+    logo: material/zip-box
+    annotation: material/arrow-right-circle
+  font:
+    code: monospace
+  features:
+    - navigation.instant
+    - navigation.expand
+  palette:
+  - media: "(prefers-color-scheme)"
+    toggle:
+      icon: material/brightness-auto
+      name: Switch to light mode
+  - media: "(prefers-color-scheme: light)"
+    scheme: default
+    primary: blue
+    accent: deep purple
+    toggle:
+      icon: material/weather-sunny
+      name: Switch to dark mode
+  - media: "(prefers-color-scheme: dark)"
+    scheme: slate
+    primary: indigo
+    accent: deep purple
+    toggle:
+      icon: material/weather-night
+      name: Switch to system preference
+
+plugins:
+- search
+- autorefs
+- llmstxt:
+    full_output: llms-full.txt
+    markdown_description: |
+      `iqz` is a python library implementing a simple lossless compression
+      codec for raw (I/Q) mmWave radar data. It subtracts a per-chunk mean
+      chirp, zigzag-encodes and byte-shuffles the residuals, and entropy codes
+      the result with zstd.
+    sections:
+      "IQZ":
+      - index.md: Project overview and installation
+      - api.md: Encoder and decoder API reference
+- mkdocstrings:
+    default_handler: python_xref
+    handlers:
+      python_xref:
+        paths: [src]
+        options:
+          docstring_style: google
+          relative_crossrefs: true
+          separate_signature: true
+          line_length: 80
+          show_signature_annotations: true
+          signature_crossrefs: true
+          show_root_full_path: true
+          show_root_members_full_path: true
+          show_symbol_type_heading: true
+          show_root_heading: true
+          show_root_toc_entry: true
+          heading_level: 1
+          check_crossrefs_exclude:
+          - "^numpy\\.(.*)"
+        inventories:
+        - https://docs.python.org/3/objects.inv
+        - https://numpy.org/doc/stable/objects.inv
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - toc:
+      permalink: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - def_list
+  - attr_list
+  - md_in_html
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - pymdownx.details
+  - footnotes
