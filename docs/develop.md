@@ -23,14 +23,11 @@ uv run pre-commit install
 uv run pytest -ra --cov --cov-report=html --cov-report=term -- tests
 ```
 
-Check both backends against the reference test vectors (not included in the repository):
-```sh
-uv run python scripts/check_vectors.py path/to/testvectors
-```
+The tests include reference test vectors (`tests/data/`): blobs encoded by the original prototype, with the SHA-256 of the original data in `manifest.json`. Both backends must decode them exactly, and reproduce them byte for byte when built against the same libzstd version.
 
 Benchmark single-threaded encode and decode throughput on the same vectors:
 ```sh
-uv run python scripts/bench.py path/to/testvectors
+uv run python scripts/bench.py
 ```
 
 !!! info

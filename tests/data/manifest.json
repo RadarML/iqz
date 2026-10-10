@@ -1,0 +1,55 @@
+{
+ "libzstd": "1.5.7",
+ "vectors": [
+  {
+   "name": "tartan_outdoor",
+   "shape": [
+    64,
+    3,
+    4,
+    1024
+   ],
+   "encoded_bytes": 639397,
+   "ratio": 2.4599,
+   "raw_sha256": "0dbca5abd8ef7839bf2ae283d7d6f44e6ca14855dad24c9359b4446ba1145954",
+   "encoded_sha256": "1825cfd4d7c592c9858209019dc61e73d591de58dff24cc59ee114bdd4b413ef",
+   "source": {
+    "dataset": "Tartan*",
+    "trace": "2026-07-07-13-01-04",
+    "chunk": 17705
+   }
+  },
+  {
+   "name": "iq1m_outdoor",
+   "shape": [
+    64,
+    3,
+    4,
+    512
+   ],
+   "encoded_bytes": 452431,
+   "ratio": 1.7382,
+   "raw_sha256": "3a6bf81f9051aeea95eac3a81c32be6a3802683c6b63f517979528ce92955c7b",
+   "encoded_sha256": "d9cb3d8b9df2b31efb09dc65aba29816ed274fd8a22f4fb740583c6406581871",
+   "source": {
+    "dataset": "I/Q-1M",
+    "trace": "outdoor/baum",
+    "chunk": 3000
+   }
+  },
+  {
+   "name": "synthetic_int16_extremes",
+   "shape": [
+    64,
+    3,
+    4,
+    1024
+   ],
+   "encoded_bytes": 844224,
+   "ratio": 1.8631,
+   "raw_sha256": "2d7747d0850c3f71547a4fc4ff4800b10825bc83b1a225c7b64d97bb8840d3ba",
+   "encoded_sha256": "b1103c0ae69de6c909863669c0569493691883c84523ab35f2210bbb2c208171",
+   "source": "synthetic"
+  }
+ ]
+}

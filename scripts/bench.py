@@ -1,12 +1,12 @@
 """Single-threaded encode / decode throughput, per backend.
 
-Usage: `uv run python scripts/bench.py [testvectors-dir]`
+Usage: `uv run python scripts/bench.py`
 
-Uses the `.npy` chunks in the test vector directory (default
-`iqz-handoff/testvectors`); reports MB/s of raw (decoded) data.
+Uses the reference test vectors in `tests/data`; reports MB/s of raw
+(decoded) data, decoding into a reused output buffer.
 """
 
-import sys
+import json
 import time
 from pathlib import Path
 from typing import Literal
@@ -31,22 +31,23 @@ def _bench(name: str, x: np.ndarray, backend: Literal["native", "numpy"]) -> Non
     blob = iqz.encode(x, backend=backend)
     out = np.empty_like(x)
     enc = _rate(lambda: iqz.encode(x, backend=backend), x.nbytes)
-    dec = _rate(lambda: iqz.decode(blob, backend=backend), x.nbytes)
-    into = _rate(
+    dec = _rate(
         lambda: iqz.decode_into(blob, out, backend=backend), x.nbytes)
     print(f"{name:28s} {backend:7s} {x.nbytes / len(blob):6.3f} "
-          f"{enc:7.0f} MB/s {dec:7.0f} MB/s {into:7.0f} MB/s")
+          f"{enc:7.0f} MB/s {dec:7.0f} MB/s")
 
 
 def main(root: Path) -> None:
-    """Benchmark each `.npy` chunk in `root`."""
+    """Benchmark each reference vector in `root`."""
     print(f"{'chunk':28s} {'backend':7s} {'ratio':>6s} "
-          f"{'encode':>12s} {'decode':>12s} {'decode_into':>12s}")
-    for path in sorted(root.glob("*.npy")):
-        x = np.load(path)
+          f"{'encode':>12s} {'decode':>12s}")
+    manifest = json.loads((root / "manifest.json").read_text())
+    for v in manifest["vectors"]:
+        blob = (root / f"{v['name']}.iqz").read_bytes()
+        x = iqz.decode(blob, tuple(v["shape"][1:]))
         for backend in BACKENDS:
-            _bench(path.stem, x, backend)
+            _bench(v["name"], x, backend)
 
 
 if __name__ == "__main__":
-    main(Path(sys.argv[1] if len(sys.argv) > 1 else "iqz-handoff/testvectors"))
+    main(Path(__file__).parent.parent / "tests" / "data")

@@ -4,6 +4,15 @@ version = "0.1.0"
 edition = "2021"
 license = "MIT"
 publish = false
+# Files in the source distribution (maturin builds the sdist from this list,
+# and adds the Python sources, pyproject.toml, README, and LICENSE).
+include = [
+    "/Cargo.toml",
+    "/Cargo.lock",
+    "/rust/**/*.rs",
+    "/tests/**/*.py",
+    "/tests/data/*",
+]
 
 [lib]
 name = "_native"
