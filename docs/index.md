@@ -1,5 +1,12 @@
 # `iqz`: Lossless I/Q Radar Compression
 
+[![pypi version](https://img.shields.io/pypi/v/iqz.svg)](https://pypi.org/project/iqz/)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/iqz)
+![License - MIT](https://img.shields.io/badge/license-MIT-green)
+![PyPI - Types](https://img.shields.io/pypi/types/iqz)
+[![CI](https://github.com/RadarML/iqz/actions/workflows/ci.yml/badge.svg)](https://github.com/RadarML/iqz/actions/workflows/ci.yml)
+![GitHub issues](https://img.shields.io/github/issues/RadarML/iqz)
+
 `iqz` is a simple, fast, lossless compression codec for raw (I/Q) mmWave radar data which achieves modest compression ratios at fast speeds suitable for on-device encoding and in-dataloader decoding.
 
 | | Tartan* | I/Q-1M |
