@@ -18,12 +18,12 @@ Each chunk of chirps (typically 64) is encoded by subtracting the chunk's rounde
 ### Install
 
 ```sh
-pip install git+https://github.com/RadarML/iqz.git
+pip install iqz
 ```
 
 !!! info
 
-    `iqz` includes a native (Rust) backend, so installing from source requires a [Rust toolchain](https://rustup.rs/). A pure numpy backend (using `zstandard`) is also included as a reference implementation.
+    Prebuilt wheels with the native (Rust) backend are available for Linux (x86_64 and aarch64, e.g. Jetson and Raspberry Pi 4/5 with a 64-bit OS), macOS, and Windows, for Python 3.10 and later. On other platforms, pip builds from source, which requires a [Rust toolchain](https://rustup.rs/). A pure numpy backend (using `zstandard`) is also included as a reference implementation.
 
 ### Basic Usage
 

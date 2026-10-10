@@ -34,6 +34,14 @@ uv run python scripts/bench.py
 
     The pre-commit hooks (`ruff + pyright + pytest + cargo fmt + cargo clippy`) can be run manually with `uv run pre-commit run --all-files`.
 
+## Releasing
+
+Releases are built and published by the `Release` workflow (`.github/workflows/release.yml`), which builds an abi3 wheel per platform (Linux x86_64 / aarch64, macOS x86_64 / arm64, Windows x64) and the sdist, and tests each wheel before publishing.
+
+1. Bump the version in `pyproject.toml` (and `Cargo.toml`).
+2. Optionally, run the workflow manually (Actions → Release → Run workflow) to publish to [TestPyPI](https://test.pypi.org/project/iqz/), and check that `pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ iqz` works.
+3. Create and publish a release on GitHub (Releases → Draft a new release), with a new tag such as `v0.1.0`. Publishing the release publishes the package to PyPI; drafts do not.
+
 ## Analysis
 
 The measurements on the [Analysis](analysis/index.md) page are produced by a separate project in `analysis/`, with its own dependencies; see `analysis/README.md`. Its outputs (`analysis/results/`, and the figures and tables in `docs/analysis/`) are committed, so building the docs does not require the datasets.

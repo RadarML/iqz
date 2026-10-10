@@ -22,20 +22,28 @@ authors = [
 ]
 description = "A simple lossless compression codec for I/Q radar data."
 readme = "README.md"
+keywords = ["radar", "mmwave", "fmcw", "iq", "compression", "lossless", "zstd"]
 requires-python = ">=3.10"
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
 classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering",
+    "Topic :: System :: Archiving :: Compression",
     "Typing :: Typed",
 ]
 
 dependencies = [
-    "numpy >= 1.19",
+    "numpy >= 1.21",
     "zstandard >= 0.22",
     "jaxtyping >= 0.3.2",
     "typing_extensions >= 4.6; python_version < '3.12'",

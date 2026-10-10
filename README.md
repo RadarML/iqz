@@ -3,7 +3,7 @@
 A simple lossless compression codec for I/Q radar data: subtract each chunk's mean chirp, zigzag and byte-shuffle the residuals, and compress with zstd. It gets 2.31x on Tartan\* and 1.84x on I/Q-1M (vs. 1.62x and 1.43x for zstd alone), and decodes at ~3 GB/s per core with the native (Rust) backend.
 
 ```sh
-pip install git+https://github.com/RadarML/iqz.git
+pip install iqz
 ```
 
 ```python
