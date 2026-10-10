@@ -20,3 +20,17 @@ repos:
         entry: uv run --extra dev pytest -- tests
         language: system
         pass_filenames: false
+
+      - id: cargo-fmt
+        name: Format check with cargo fmt
+        entry: cargo fmt --check
+        language: system
+        types: [rust]
+        pass_filenames: false
+
+      - id: cargo-clippy
+        name: Lint with cargo clippy
+        entry: cargo clippy --release -- -D warnings
+        language: system
+        types: [rust]
+        pass_filenames: false

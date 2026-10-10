@@ -1,0 +1,6 @@
+import numpy as np
+
+ZSTD_VERSION: str
+
+def encode_chunk(x: np.ndarray, level: int) -> bytes: ...
+def decode_into(blob: np.ndarray, out: np.ndarray) -> None: ...

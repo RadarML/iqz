@@ -1,6 +1,18 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["maturin >= 1.7, < 2"]
+build-backend = "maturin"
+
+[tool.maturin]
+python-source = "src"
+module-name = "iqz._native"
+features = ["pyo3/extension-module"]
+
+[tool.uv]
+cache-keys = [
+    { file = "pyproject.toml" },
+    { file = "Cargo.toml" },
+    { file = "rust/**/*.rs" },
+]
 
 [project]
 name = "iqz"
@@ -24,6 +36,9 @@ classifiers = [
 
 dependencies = [
     "numpy >= 1.19",
+    "zstandard >= 0.22",
+    "jaxtyping >= 0.3.2",
+    "typing_extensions >= 4.6; python_version < '3.12'",
 ]
 
 [project.optional-dependencies]

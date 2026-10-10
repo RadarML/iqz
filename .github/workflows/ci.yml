@@ -1,0 +1,54 @@
+name: Run CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v5
+
+    - name: Install Rust toolchain
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        components: clippy, rustfmt
+
+    - name: Cache Rust build
+      uses: Swatinem/rust-cache@v2
+
+    - name: Install uv with Python 3.12
+      uses: astral-sh/setup-uv@v6
+      with:
+        python-version: "3.12"
+        enable-cache: true
+        cache-dependency-glob: "uv.lock"
+
+    - name: Install dependencies (and build the native extension)
+      run: |
+        uv sync --extra dev --frozen
+
+    - name: Lint with ruff
+      run: |
+        uv run --extra dev ruff check ./src
+
+    - name: Type check with pyright
+      run: |
+        uv run --extra dev pyright ./src
+
+    - name: Check formatting with cargo fmt
+      run: |
+        cargo fmt --check
+
+    - name: Lint with cargo clippy
+      run: |
+        cargo clippy --release -- -D warnings
+
+    - name: Run tests
+      run: |
+        uv run --extra dev pytest -ra -- tests
