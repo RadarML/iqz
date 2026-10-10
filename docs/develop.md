@@ -17,18 +17,6 @@ uv run pre-commit install
 
 `uv sync` builds the native extension (`iqz._native`), and rebuilds it whenever `Cargo.toml` or `rust/*.rs` changes.
 
-## Layout
-
-| Path | Contents |
-| --- | --- |
-| `src/iqz/_api.py` | Functional API, input coercion, and backend dispatch. |
-| `src/iqz/_stream.py` | `Encoder` and `Decoder`. |
-| `src/iqz/_format.py` | Blob parsing (frame split, shape recovery). |
-| `src/iqz/_numpy.py` | Pure numpy backend. |
-| `rust/lib.rs` | Native backend. |
-
-Both backends implement the same two primitives on a C-contiguous `(n, M)` int16 chunk: `encode_chunk(x, level) -> bytes` and `decode_into(blob, out)`. Both produce byte-identical blobs when linked against the same libzstd version.
-
 ## Tests
 
 ```sh

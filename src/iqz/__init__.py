@@ -3,7 +3,7 @@
 Each chunk of `n` chirps (int16, any per-chirp shape) is encoded by
 subtracting the chunk's rounded mean chirp, zigzag-encoding and
 byte-shuffling the residuals, and compressing with zstd; see the
-[format specification](format.md) for details.
+[format specification](index.md#format) for details.
 
 - Functional API: [`encode`][.], [`decode`][.], [`decode_into`][.],
   [`info`][.].

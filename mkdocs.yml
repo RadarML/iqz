@@ -4,7 +4,6 @@ repo_url: https://github.com/RadarML/iqz
 repo_name: RadarML/iqz
 nav:
   - Home: index.md
-  - Format: format.md
   - API: api.md
   - Development: develop.md
 
@@ -53,8 +52,7 @@ plugins:
       the result with zstd.
     sections:
       "IQZ":
-      - index.md: Project overview, installation, and usage
-      - format.md: Byte-level specification of the encoded chunk format
+      - index.md: Project overview, installation, usage, and byte-level format specification
       - api.md: Functional and streaming encoder / decoder API reference
       - develop.md: Development environment setup, testing, and benchmarking
 - mkdocstrings:
